@@ -4,7 +4,7 @@
 
 1. **Find out the IP address of your printer.** You can do this by printing out the printers current settings [like this man does in this video](https://www.youtube.com/watch?v=dIrkViLUknA&ab_channel=JasonWicks). On the printout you will see the printers IP address. For the sake of example mine _was_ `192.168.0.192`.
 2. **Leave the printer connected to your router and turned on.**
-3. **Try `ping`-ing the printer.** If you can `ping 192.168.0.192` then the printer is ready to receive commands and you can skip to step #TODO.
+3. **Try `ping`-ing the printer.** If you can `ping 192.168.0.192` then the printer is ready to receive commands and you can skip to step **10**.
 4. **Find out your machines IP address.** If your printer was not `ping`-able, as mine wasn't, then it is likely on a different subnetwork. You can do this with `ip addr show`. You'll probably get a load of stuff which at first is indecipherable, but if you're connected to WiFI (like, who isn't?) there'll likely be an entry a lot like `wlp0s20f3`:
 
 ```
