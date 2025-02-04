@@ -1,0 +1,18 @@
+[
+  {
+    "siteName": "printer-hub",
+    "subdomain": "printer-hub",
+    "port": 3000,
+    "devUrl": "http://localhost:3000",
+    "prodUrl": "http://printer-hub.murr.gojk",
+    "remotePath": "/var/www/printer-hub/html"
+  },
+  {
+    "siteName": "printer-hub-server",
+    "subdomain": "printer-hub-server",
+    "port": 3001,
+    "devUrl": "http://localhost:3001",
+    "prodUrl": "http://printer-hub-server.murr.gojk",
+    "remotePath": "/var/www/printer-hub-server/html"
+  }
+]
