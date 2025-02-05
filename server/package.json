@@ -4,7 +4,9 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "tsup",
+    "sync": "rsync -avz --delete ./dist/index.js josh@192.168.1.21:/home/josh/test"
   },
   "keywords": [],
   "author": "",
@@ -13,5 +15,8 @@
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "net": "^1.0.2"
+  },
+  "devDependencies": {
+    "tsup": "^8.3.6"
   }
 }

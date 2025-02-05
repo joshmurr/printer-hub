@@ -1,7 +1,7 @@
 // Replace this with your actual server IP/hostname
 const SERVER_URL = 'http://192.168.1.21:3001';
 
-async function sendToPrinter(command) {
+export async function sendToPrinter(command) {
   const statusDiv = document.getElementById('status');
   try {
     console.log('Sending command:', command);
@@ -29,7 +29,7 @@ async function sendToPrinter(command) {
   }
 }
 
-async function printText() {
+export async function printText() {
   const text = document.getElementById('printText').value;
   if (!text) {
     alert('Please enter some text to print');
@@ -39,12 +39,12 @@ async function printText() {
   await sendToPrinter(command);
 }
 
-async function printTest() {
+export async function printTest() {
   const command = '\x1B\x40\x1B\x21\x00Test Print\x0A\x1D\x56\x41';
   await sendToPrinter(command);
 }
 
-async function feedAndCut() {
+export async function feedAndCut() {
   const command = '\x1B\x40\x0A\x0A\x0A\x0A\x1D\x56\x41';
   await sendToPrinter(command);
 }

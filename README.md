@@ -39,7 +39,7 @@ sudo ip addr del 192.168.0.100/24 dev wlp0s20f3
 
 to remove the temporary IP address and then `ping 192.168.1.192` to see if you're now both on the same network. This worked for me, so if it didn't for you then I dunno.
 
-> For the remaining faff I'm going to assume you have installed the drivers for the big boy **Aures ODP 333** printer ([drivers here](https://aures-support.com/en/receipt-printers/aures-printers/)), and also have [CUPS](https://www.cups.org/) installed. CUPS should come with `lpstat` and `lpoptions` and `lp` I believe. I also did these steps slightly at random when I was troubleshooting so some things you may _need_ to do, others you might not.
+> For the remaining faff I'm going to assume you have installed the drivers for the big boy **Aures ODP 333** printer ([drivers here](https://aures-support.com/en/receipt-printers/aures-printers/)), and also have [CUPS](https://openprinting.github.io/cups/) installed ([or possibly the Apple one](https://www.cups.org/), not sure of the difference). CUPS should come with `lpstat` and `lpoptions` and `lp` I believe. I also did these steps slightly at random when I was troubleshooting so some things you may _need_ to do, others you might not.
 
 10. **Find the printer in CUPS.** If you have CUPS installed, it should be running it's own GUI on `http://localhost:631`. If your Aures printer is not appearing, temporarily connect it via USB and it should. Mine is called _Thermal-Printer_.
 

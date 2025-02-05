@@ -1,9 +1,9 @@
-import globals from "globals";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-import js from "@eslint/js";
-import { FlatCompat } from "@eslint/eslintrc";
-import eslintConfigPrettier from "eslint-config-prettier";
+import globals from 'globals';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import js from '@eslint/js';
+import { FlatCompat } from '@eslint/eslintrc';
+import eslintConfigPrettier from 'eslint-config-prettier';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -14,9 +14,9 @@ const compat = new FlatCompat({
 });
 
 export default [
-  ...compat.extends("eslint:recommended"),
+  ...compat.extends('eslint:recommended'),
   eslintConfigPrettier,
-  { ignores: ["dist"] },
+  { ignores: ['dist'] },
   {
     languageOptions: {
       globals: {
@@ -25,14 +25,14 @@ export default [
       },
 
       ecmaVersion: 2022,
-      sourceType: "module",
+      sourceType: 'module',
     },
 
     rules: {
-      "no-unused-vars": "warn",
-      quotes: ["error", "single"],
-      semi: ["error", "always"],
-      "no-console": "off",
+      'no-unused-vars': 'warn',
+      quotes: ['error', 'single'],
+      semi: ['error', 'always'],
+      'no-console': 'off',
     },
   },
 ];
