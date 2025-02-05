@@ -1,5 +1,17 @@
 # Printer Hub
 
+```
+   +--------+
+  /        /|
+ /        / |
++--------+  |
+|        |  |
+| -----  |  +
+|        | /
+|        |/
++--------+
+```
+
 ## Networking the printer
 
 1. **Find out the IP address of your printer.** You can do this by printing out the printers current settings [like this man does in this video](https://www.youtube.com/watch?v=dIrkViLUknA&ab_channel=JasonWicks). On the printout you will see the printers IP address. For the sake of example mine _was_ `192.168.0.192`.
