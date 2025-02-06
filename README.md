@@ -42,7 +42,7 @@ Make sure you're setting a subnet mask which matches your printer, in my case th
 
 ![Printer GUI](./images/printer-gui.png)
 
-7. **Change the printer IP address.** Change the IP address to one on your subnet, I just changed the `0` to a `1`. AFAIK the higher numbers are less likely to clash with pre-existing _stuff_, so leaving the `192` felt fine. I also changed the gateway to `192.168.1.1`. I don't know if the final number being `1` will always be your gateway, but again AFAIK, you can test this by going to `http://192.169.1.1` and you _should_ see your router's GUI where you can change the WiFi password and stuff.
+7. **Change the printer IP address.** Change the IP address to one on your subnet, I just changed the `0` to a `1`. AFAIK the higher numbers are less likely to clash with pre-existing _stuff_, so leaving the `192` felt fine. I also changed the gateway to `192.168.1.1`. I don't know if the final number being `1` will always be your gateway, but again AFAIK, you can test this by going to `http://192.168.1.1` and you _should_ see your router's GUI where you can change the WiFi password and stuff.
 8. **Revert your IP address.** Changing the IP might (should) mess up the page cos it's now being served from a different IP. But that's ok, now just run:
 
 ```bash
@@ -63,7 +63,7 @@ to remove the temporary IP address and then `ping 192.168.1.192` to see if you'r
 
 then just click _Continue_, _Continue_ and _Modify_ to complete the changes. The connection should now show `Connection: socket://192.168.1.192:9100`. We can test this also with `lpstat -v Thermal-Printer` which should give `device for Thermal-Printer: socket://192.168.1.192:9100`.
 
-12. **PRINT SOMETHING.** We can finally print something. Do this:
+12. **PRINT SOMETHING.** We can finally print something. Unplug it from USB, make sure it's connected to the router, and do this:
 
 ```bash
 echo "Test print $(date)" > test.txt
