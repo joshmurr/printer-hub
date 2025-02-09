@@ -1,16 +1,36 @@
 import { PrinterClient } from "./PrinterClient";
 import { PRINTER_CONFIG } from "./constants";
 
+export type PrinterCommand = {
+  text: string;
+  shouldCut?: boolean;
+  linesToFeed?: number;
+};
+
 export class PrinterCommands {
-  static createTextCommand(text: string): string {
-    return `${PRINTER_CONFIG.COMMANDS.INITIALIZE}${text}${PRINTER_CONFIG.COMMANDS.FEED_AND_CUT}`;
+  private static readonly LINES_BEFORE_CUT = 5; // Extra lines to ensure text is printed
+
+  static createTextCommand({ text, shouldCut = true }: PrinterCommand): string {
+    const extraLineFeeds = this.createFeedCommand();
+    return shouldCut ? `${text}${extraLineFeeds}` : text;
+  }
+
+  static createFeedCommand(lines: number = this.LINES_BEFORE_CUT): string {
+    return (
+      PRINTER_CONFIG.COMMANDS.ESC +
+      PRINTER_CONFIG.COMMANDS.FEED +
+      String.fromCharCode(lines)
+    );
+  }
+
+  static createCutCommand(): string {
+    return PRINTER_CONFIG.COMMANDS.FULL_CUT;
   }
 
   static createPrinterBitmapCommand(
     width: number,
     height: number,
     imageData: ImageData,
-    includeFeed: boolean = true,
   ): ArrayBuffer {
     const bytesPerLine = Math.ceil(width / 8);
     const rasterData = new Uint8Array(bytesPerLine * height);
@@ -41,18 +61,10 @@ export class PrinterCommands {
       (height >> 8) & 0xff,
     ];
 
-    // Only include feed command if requested
-    const commandEnd = includeFeed ? [0x0a] : [];
-
-    const result = new Uint8Array(
-      commandStart.length + rasterData.length + commandEnd.length,
-    );
-
+    // Remove the feed/cut sequence entirely
+    const result = new Uint8Array(commandStart.length + rasterData.length);
     result.set(commandStart, 0);
     result.set(rasterData, commandStart.length);
-    if (commandEnd.length > 0) {
-      result.set(commandEnd, commandStart.length + rasterData.length);
-    }
 
     return result.buffer;
   }
@@ -98,7 +110,7 @@ export class PrinterCommands {
       (height >> 8) & 0xff, // yH
     ];
 
-    const commandEnd = [0x0a]; // Line feed
+    const commandEnd = [0x0a, 0x0a, 0x0a, 0x0a, 0x1d, 0x56, 0x00]; // Line feed and cut
 
     const result = new Uint8Array(
       commandStart.length + rasterData.length + commandEnd.length,
@@ -109,17 +121,6 @@ export class PrinterCommands {
     result.set(commandEnd, commandStart.length + rasterData.length);
 
     return result.buffer;
-  }
-
-  static createFeedCommand(lines: number = 5): ArrayBuffer {
-    // ESC d n - Feed n lines
-    const command = [
-      0x1b,
-      0x64,
-      lines, // Feed n lines
-    ];
-
-    return new Uint8Array(command).buffer;
   }
 
   static async printLargeImage(imageData: ImageData): Promise<void> {
@@ -154,13 +155,25 @@ export class PrinterCommands {
 
       const chunkImageData = ctx.getImageData(0, 0, width, chunkHeight);
       const isLastChunk = i === numChunks - 1;
-      const command = PrinterCommands.createPrinterBitmapCommand(
-        width,
-        chunkHeight,
-        chunkImageData,
-        isLastChunk,
-      );
-      await PrinterClient.sendCommand(command, true);
+
+      if (isLastChunk) {
+        const command = PrinterCommands.createPrinterBitmapCommand(
+          width,
+          chunkHeight,
+          chunkImageData,
+        );
+        await PrinterClient.sendCommand(command, true);
+        await PrinterClient.sendCommand(PrinterCommands.createFeedCommand());
+        await PrinterClient.sendCommand(PrinterCommands.createCutCommand());
+      } else {
+        const command = PrinterCommands.createPrinterBitmapCommand(
+          width,
+          chunkHeight,
+          chunkImageData,
+        );
+
+        await PrinterClient.sendCommand(command, true);
+      }
     }
   }
 }

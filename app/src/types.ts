@@ -1,4 +1,5 @@
 import {
+  handleCut,
   handleFeedAndCut,
   handlePrintImageFromUrl,
   handlePrintTest,
@@ -15,6 +16,7 @@ declare global {
       handlePrintImageFromUrl: typeof handlePrintImageFromUrl;
       handlePrintTestPattern: typeof handlePrintTestPattern;
       handleFeed: typeof handleFeedAndCut;
+      handleCut: typeof handleCut;
     };
   }
 }

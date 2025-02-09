@@ -1,8 +1,17 @@
 import { ImageProcessor } from "./ImageProcessor";
-import { PrinterCommands } from "./PrinterCommands";
+import { PrinterCommand, PrinterCommands } from "./PrinterCommands";
 import { PRINTER_CONFIG } from "./constants";
 
 export class PrinterClient {
+  private static initialized = false;
+
+  static async initialize(): Promise<void> {
+    if (!this.initialized) {
+      await this.sendCommand(PRINTER_CONFIG.COMMANDS.INITIALIZE);
+      this.initialized = true;
+    }
+  }
+
   static async sendCommand(
     command: string | ArrayBuffer,
     isBinary = false,
@@ -57,9 +66,48 @@ export class PrinterClient {
     }
   }
 
-  static async printText(text: string): Promise<void> {
-    const command = PrinterCommands.createTextCommand(text);
-    await this.sendCommand(command);
+  static async printText(
+    text: string,
+    options: Omit<PrinterCommand, "text"> = {},
+  ): Promise<void> {
+    await this.initialize();
+
+    // First send just the text and line feeds
+    const textCommand = PrinterCommands.createTextCommand({
+      text,
+      shouldCut: false,
+      ...options,
+    });
+    await this.sendCommand(textCommand);
+
+    // If cutting is requested, wait a bit then send cut command
+    if (options.shouldCut !== false) {
+      await new Promise((resolve) => setTimeout(resolve, 500)); // 500ms delay
+      await this.sendCommand(PRINTER_CONFIG.COMMANDS.FULL_CUT);
+    }
+  }
+
+  // Example usage for multiple prints
+  static async printMultipleTexts(texts: string[]): Promise<void> {
+    await this.initialize();
+
+    // Print all texts except the last one without cutting
+    for (let i = 0; i < texts.length - 1; i++) {
+      const command = PrinterCommands.createTextCommand({
+        text: texts[i],
+        shouldCut: false,
+      });
+      await this.sendCommand(command);
+    }
+
+    // Print the last text with a cut
+    if (texts.length > 0) {
+      const command = PrinterCommands.createTextCommand({
+        text: texts[texts.length - 1],
+        shouldCut: true,
+      });
+      await this.sendCommand(command);
+    }
   }
 
   static async printImage(imageUrl: string): Promise<void> {

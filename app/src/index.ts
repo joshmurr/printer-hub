@@ -8,15 +8,15 @@ export async function handlePrintText(): Promise<void> {
     alert("Please enter some text to print");
     return;
   }
-  await PrinterClient.printText(inputElement.value);
+  await PrinterClient.printText(inputElement.value, { shouldCut: true });
 }
 
 export async function handlePrintTest(): Promise<void> {
-  await PrinterClient.printText("Test Print");
+  await PrinterClient.printText("Test Print", { shouldCut: true });
 }
 
 export async function handleFeedAndCut(): Promise<void> {
-  await PrinterClient.printText("\n\n\n\n");
+  await PrinterClient.printText("\n\n\n\n", { shouldCut: true });
 }
 
 export async function handlePrintImageFromUrl(): Promise<void> {
@@ -46,6 +46,11 @@ export async function handleFeed(): Promise<void> {
   await PrinterClient.sendCommand(command, true);
 }
 
+export async function handleCut(): Promise<void> {
+  const command = PrinterCommands.createCutCommand();
+  await PrinterClient.sendCommand(command, true);
+}
+
 window.printerHub = {
   handlePrintText,
   handlePrintTest,
@@ -53,4 +58,5 @@ window.printerHub = {
   handlePrintImageFromUrl,
   handlePrintTestPattern,
   handleFeed,
+  handleCut,
 };
