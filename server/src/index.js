@@ -3,27 +3,46 @@ const net = require("net");
 const cors = require("cors");
 const app = express();
 
-// More explicit CORS configuration
 app.use(
   cors({
-    origin: "*", // Be careful with this in production
+    origin: "*",
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"],
   }),
 );
 
-app.use(express.text());
-
-// Test GET route still works
-app.get("/test", (req, res) => {
-  res.send("Server is running");
+// Add raw body parsing for binary data
+app.use((req, _, next) => {
+  if (req.headers["content-type"] === "application/octet-stream") {
+    let data = [];
+    req.on("data", (chunk) => {
+      data.push(chunk);
+    });
+    req.on("end", () => {
+      req.body = Buffer.concat(data);
+      next();
+    });
+  } else {
+    next();
+  }
 });
 
-// Add OPTIONS handling for CORS preflight
+// Keep text middleware for text requests
+app.use(express.text());
+
 app.options("/print", cors());
 
+app.get("/test", (_, res) => {
+  console.log("Received test request");
+  res.status(200).send("Test request received");
+});
+
 app.post("/print", async (req, res) => {
-  console.log("Received print request with body:", req.body);
+  console.log(
+    "Received print request with content-type:",
+    req.headers["content-type"],
+  );
+  console.log("Body length:", req.body.length);
 
   try {
     const client = new net.Socket();
@@ -33,8 +52,10 @@ app.post("/print", async (req, res) => {
         console.log("Connected to printer");
         client.write(req.body, (err) => {
           if (err) {
+            console.error("Printer error:", err);
             reject(err);
           } else {
+            console.log("Print job sent successfully");
             client.end();
             resolve();
           }

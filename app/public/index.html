@@ -21,6 +21,14 @@
       button {
         padding: 5px 10px;
       }
+
+      .preview-group {
+        display: flex;
+      }
+
+      .preview {
+        max-width: 200px;
+      }
     </style>
   </head>
   <body>
@@ -35,6 +43,26 @@
       <div class="input-group">
         <button onclick="printerHub.printTest()">Test Print</button>
         <button onclick="printerHub.feedAndCut()">Feed & Cut</button>
+      </div>
+
+      <div class="input-group">
+        <input
+          type="text"
+          id="printUrl"
+          placeholder="Enter URL to print image"
+        />
+        <button onclick="printerHub.printImageFromUrl()">Print Text</button>
+      </div>
+
+      <div class="input-group">
+        <h2>Image URL</h2>
+        <pre>
+https://fastly.picsum.photos/id/696/200/300.jpg?hmac=Ukxvga_1GYxgfAqzwDhBPfVta6-hJKUhayVlI1yMIdk</pre
+        >
+      </div>
+
+      <div class="preview-group">
+        <canvas id="previewCanvas" class="preview"></canvas>
       </div>
 
       <div id="status"></div>

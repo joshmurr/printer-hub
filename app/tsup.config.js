@@ -1,13 +1,19 @@
-import { defineConfig } from 'tsup';
+import { defineConfig } from "tsup";
 
 export default defineConfig({
-  entry: ['src/index.js'],
-  format: ['iife'], // Immediately Invoked Function Expression
-  platform: 'browser',
+  entry: ["src/index.ts"],
+  format: ["esm", "iife"], // Added ESM for modern usage
+  platform: "browser",
   bundle: true,
   clean: true,
-  treeshake: false,
+  treeshake: true, // Enable treeshaking since we have modular code
   publicDir: true,
-  outDir: 'dist',
-  globalName: 'printerHub', // Your functions will be available as MyLibrary.functionName
+  outDir: "dist",
+  globalName: "printerHub",
+  minify: true, // Add minification
+  sourcemap: true, // Add sourcemaps for debugging
+  dts: true, // Generate declaration files
+  esbuildOptions(options) {
+    options.charset = "utf8"; // Important for handling printer control characters
+  },
 });
